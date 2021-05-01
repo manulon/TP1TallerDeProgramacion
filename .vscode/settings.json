@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "common_socket.h": "c",
+        "client_file_reader.h": "c",
+        "client.h": "c",
+        "common_plaintext.h": "c",
+        "string.h": "c",
+        "wrapsocks.h": "c",
+        "stdlib.h": "c",
+        "server_cipher_hill_encryptor.h": "c",
+        "stdio.h": "c",
+        "server.h": "c"
+    }
+}

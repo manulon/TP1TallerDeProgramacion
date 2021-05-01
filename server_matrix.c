@@ -1,8 +1,8 @@
-#include "matrix.h"
+#include "server_matrix.h"
 
 #include <math.h>
 #include <stdio.h>
-
+#include <string.h>
 
 
 void matrix_init
@@ -28,23 +28,35 @@ void matrix_uninit
 }
 
 void matrix_product
-(matrix_t* self, plaintext_t* final_plaintext,plaintext_t plaintext){ 
+(matrix_t* self,plaintext_t* plaintext){ 
     int aux = 0;
     int suma = 0;
+    plaintext_t final_plaintext;
 
-    while ( (aux < (plaintext_get_line_length(&plaintext))) 
-          & (plaintext_get_line_length(&plaintext) != 0) ){
+    plaintext_init(&final_plaintext, plaintext_get_line_length(plaintext));
+    
+    while ( (aux < (plaintext_get_line_length(plaintext))) 
+          & (plaintext_get_line_length(plaintext) != 0) ){
         for ( int i=0 ; i < self->dimension ; i++ ){
-            plaintext_set(final_plaintext,i+aux,0);
+            plaintext_set(&final_plaintext,i+aux,0);
             for ( int j=0 ; j < self->dimension ; j++ ){            
-                suma = (plaintext_get(final_plaintext,i+aux)) +
-                (self->square_matrix[i][j] * plaintext_get(&plaintext,j+aux));
-                plaintext_set(final_plaintext,i+aux,suma);
+                suma = (plaintext_get(&final_plaintext,i+aux)) +
+                (self->square_matrix[i][j] * plaintext_get(plaintext,j+aux));
+                plaintext_set(&final_plaintext,i+aux,suma);
             }
         }
         aux += self->dimension;
     }
-    plaintext_set_line_length(final_plaintext,aux);
+
+    //no me anda el set line
+    /*plaintext_set_line(plaintext,plaintext_get_line(&final_plaintext),
+                        plaintext_get_line_length(&final_plaintext));*/
+    
+    for( int i=0; i<plaintext_get_line_length(plaintext); i++){
+        plaintext_set(plaintext,i,plaintext_get(&final_plaintext,i));
+    }
+    
+    free(final_plaintext.line);
 }
 
 int  matrix_get_dimension(matrix_t *self){

@@ -1,10 +1,10 @@
-#ifndef MATRIX_H
-#define MATRIX_H
+#ifndef SERVER_MATRIX_H
+#define SERVER_MATRIX_H
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "plaintext.h"
-#include "password.h"
+#include "common_plaintext.h"
+#include "server_password.h"
 
 typedef struct {
     int square_matrix[4][4];           //CONSTANTE MAX MATRIX SIZE
@@ -14,8 +14,7 @@ typedef struct {
 
 void matrix_init(matrix_t* self,password_t password);
 void matrix_uninit(matrix_t* self);
-void matrix_product(matrix_t* self, 
-plaintext_t* final_plaintext,plaintext_t plaintext);
+void matrix_product(matrix_t* self,plaintext_t* plaintext);
 int  matrix_get_dimension(matrix_t *self);
 
 

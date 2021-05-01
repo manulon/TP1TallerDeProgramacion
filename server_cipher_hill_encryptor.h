@@ -1,20 +1,20 @@
-#ifndef CIPHER_HILL_ENCRYPTOR_H
-#define CIPHER_HILL_ENCRYPTOR_H
+#ifndef SERVER_CIPHER_HILL_ENCRYPTOR_H
+#define SERVER_CIPHER_HILL_ENCRYPTOR_H
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "plaintext.h"
-#include "matrix.h"
+#include "common_plaintext.h"
+#include "server_matrix.h"
+#include "server.h"
 
 typedef struct {
     password_t* password;
-    plaintext_t* plaintext;
+    char* message_to_encrypt;
     plaintext_t* final_plaintext;
 } cipher_hill_encryptor_t;
 
-void cipher_hill_encryptor_init(cipher_hill_encryptor_t* self,
-plaintext_t* final_plaintext, plaintext_t* plaintext, 
-password_t* password);
+void cipher_hill_encryptor_init
+(cipher_hill_encryptor_t* self,server_t* server);
 
 void cipher_hill_encryptor_uninit(cipher_hill_encryptor_t* self);
 

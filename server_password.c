@@ -1,4 +1,4 @@
-#include "password.h"
+#include "server_password.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,8 +7,8 @@
 
 void password_init
 (password_t* self, const char* argv){
-    self->line_length = 16;
-    strncpy(self->line,argv,self->line_length);
+    strcpy(self->line,argv);
+    self->line_length = sizeof(self->line);
     password_calculate_size(self);
 }
 
@@ -41,4 +41,16 @@ int  password_get_line_length(password_t* self){
 
 char password_get(password_t* self, int i){
     return self->line[i];
+}
+
+void password_set_line(password_t* self, char* buf){
+    strcpy(self->line,buf);
+}
+
+void password_set_line_length(password_t* self, int len){
+    self->line_length = len;
+}
+
+char* password_get_line(password_t* self){
+    return self->line;
 }

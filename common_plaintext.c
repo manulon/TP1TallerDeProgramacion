@@ -1,4 +1,4 @@
-#include "file_reader.h"
+#include "common_plaintext.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,23 +14,30 @@ void plaintext_map
 
 void plaintext_filter
 (plaintext_t* self){
-    plaintext_t aux;
-    aux.line_length = 0;
+    char aux[self->line_length];
+    int aux_length = 0;
 
     for ( int i=0 ; i<(self->line_length) ; i++ ){
         if ( (self->line[i] > 64) & (self->line[i] < 91) ){
-            aux.line[aux.line_length] = self->line[i];
-            aux.line_length++;
+            aux[aux_length] = self->line[i];
+            aux_length++;
         }
     }
+    
+    strncpy(self->line,aux,aux_length);
+    self->line[aux_length+1] = '\0';                            //pongo el /0 al final.
 
-    strncpy(self->line,aux.line,aux.line_length);
-    self->line_length = aux.line_length;
+    for(int j = (aux_length+2); j < (self->line_length); j++){  //completo con ceros
+        self->line[j] = 0;
+    }
+    
+    self->line_length = aux_length;
 }
 
 void plaintext_init
 (plaintext_t* self, int length){
     self->line_length = length;
+    self->line = (char *)malloc( length * sizeof(char) );
 }
 
 void plaintext_uninit
@@ -47,23 +54,22 @@ void plaintext_unmap
 
 void plaintext_fill_with_zero
 (plaintext_t* self,int dimension){
-    if ( self->line_length != 0 ){
-        if ( ((((dimension*dimension) % self->line_length))!= 0) ){
-            int spaces_to_fill = (self->line_length + 
-            ((dimension*dimension) % self->line_length));
-            while ( self->line_length < (spaces_to_fill) ){
+    if ( self->line_length != 0 ){   
+        if ( (self->line_length % dimension)  !=0 ){
+            int rest = (self->line_length % dimension);
+            int spaces_to_fill = (self->line_length + rest);
+            while ( self->line_length < spaces_to_fill ){
                 self->line[self->line_length] = 0; 
                 self->line_length++;
             }
         }else if( (self->line_length)==1 ){
-            int spaces_to_fill = 
-            (dimension*dimension) - self->line_length;
+            int spaces_to_fill = dimension - 1;
             while ( self->line_length <= (spaces_to_fill) ){
                 self->line[self->line_length] = 0; 
                 self->line_length++;
             }
         }
-    }  
+    }
 }
 
 void plaintext_map_and_filter
@@ -82,8 +88,12 @@ char plaintext_get(plaintext_t* self, int i){
     return self->line[i];
 }
 
+char* plaintext_get_line(plaintext_t* self){
+    return self->line;
+}
+
 void plaintext_set_line(plaintext_t* self, char* buf, size_t length){
-    strncpy(self->line,buf,length);
+    strcpy(self->line,buf);
 }
 
 void plaintext_set_line_length(plaintext_t* self, int length){
@@ -92,4 +102,8 @@ void plaintext_set_line_length(plaintext_t* self, int length){
 
 void plaintext_set(plaintext_t* self, int i, char c){
     self->line[i] = c;
+}
+
+void plaintext_set_size(plaintext_t* self){
+    self->size = (short int)(self->line_length);
 }
