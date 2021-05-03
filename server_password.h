@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 typedef struct {
-    char line[16];                  //CONSTANTE
+    unsigned char line[16];                  //CONSTANTE
     int line_length;
 } password_t;
 
@@ -14,8 +14,6 @@ void  password_uninit(password_t* self);
 void  password_map(password_t* self);
 void  password_calculate_size(password_t* self);
 int   password_get_line_length(password_t* self);
-char  password_get(password_t* self, int i);
-void  password_set_line_length(password_t* self, int len);
-void  password_set_line(password_t* self, char* buf);
-char* password_get_line(password_t* self);
+unsigned char  password_get(password_t* self, int i);
+
 #endif

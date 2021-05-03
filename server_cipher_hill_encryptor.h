@@ -9,7 +9,8 @@
 
 typedef struct {
     password_t* password;
-    char* message_to_encrypt;
+    unsigned char* message_to_encrypt;
+    int   message_to_encrypt_length;
     plaintext_t* final_plaintext;
 } cipher_hill_encryptor_t;
 

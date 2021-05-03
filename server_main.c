@@ -9,10 +9,11 @@ int main(int argc, char* const* argv) {
   
     password_init(&key,argv[2]);
     server_init(&server,argv,&key);
-    
+
     receive_message_from_client(&server);
 
     server_uninit(&server);
+    password_uninit(&key);
 
     return 0;
 }

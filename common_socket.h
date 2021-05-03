@@ -45,18 +45,23 @@ struct addrinfo* get_address_info
 (socket_t* self, const char* host, const char* service, int flags);
 
 //Acepta una conexion y devuelve el fd en caso exitoso, -1 en caso de error.
-int socket_accept(socket_t *listener, socket_t *peer);
+int socket_accept
+(socket_t *listener, socket_t *peer);
 
 //Devuelve un booleano que dice si la conexion fue exitosa o no.
-void socket_connect(socket_t *self, const char* hostname, const char* servicename);
+void socket_connect
+(socket_t *self, const char* hostname, const char* servicename);
 
-ssize_t socket_send_message(socket_t* self, char* msg, int size);
-ssize_t socket_send_size(socket_t* self, short int size);
+ssize_t socket_send_message
+(socket_t* self, unsigned char* msg, int size);
+ssize_t socket_send_size
+(socket_t* self, short int size);
 
 
-ssize_t socket_receive(socket_t *self, char *buffer, size_t length);
+ssize_t socket_receive
+(socket_t *self, unsigned char *buffer, size_t length);
 
-void _socket_short_to_char(short int size, char* buffer);
-short int _socket_char_to_short(char* buffer);
+void _socket_short_to_char(short int size, unsigned char* buffer);
+short int _socket_char_to_short(unsigned char* buffer);
 
 #endif

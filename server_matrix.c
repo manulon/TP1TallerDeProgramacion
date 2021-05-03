@@ -30,9 +30,7 @@ void matrix_uninit
 void matrix_product
 (matrix_t* self,plaintext_t* plaintext){ 
     int aux = 0;
-    int suma = 0;
     plaintext_t final_plaintext;
-
     plaintext_init(&final_plaintext, plaintext_get_line_length(plaintext));
     
     while ( (aux < (plaintext_get_line_length(plaintext))) 
@@ -40,23 +38,20 @@ void matrix_product
         for ( int i=0 ; i < self->dimension ; i++ ){
             plaintext_set(&final_plaintext,i+aux,0);
             for ( int j=0 ; j < self->dimension ; j++ ){            
-                suma = (plaintext_get(&final_plaintext,i+aux)) +
-                (self->square_matrix[i][j] * plaintext_get(plaintext,j+aux));
-                plaintext_set(&final_plaintext,i+aux,suma);
+                plaintext_set(&final_plaintext,i+aux,
+                (plaintext_get(&final_plaintext,i+aux)) +
+                (self->square_matrix[i][j] * plaintext_get(plaintext,j+aux)));
             }
         }
         aux += self->dimension;
     }
 
-    //no me anda el set line
-    /*plaintext_set_line(plaintext,plaintext_get_line(&final_plaintext),
-                        plaintext_get_line_length(&final_plaintext));*/
-    
-    for( int i=0; i<plaintext_get_line_length(plaintext); i++){
+    for ( int i=0 ; i < plaintext_get_line_length(plaintext) ; i++ ){
         plaintext_set(plaintext,i,plaintext_get(&final_plaintext,i));
     }
-    
     free(final_plaintext.line);
+    //deberia hacer free
+    plaintext_uninit(&final_plaintext);
 }
 
 int  matrix_get_dimension(matrix_t *self){

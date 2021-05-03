@@ -9,18 +9,20 @@ void cipher_hill_encryptor_init
 (cipher_hill_encryptor_t* self,server_t* server){
     self->password = server->key;
     
-    int length = server->message_read_length;
-    self->message_to_encrypt = (char *)malloc( length * sizeof(char) );
-    strcpy(self->message_to_encrypt, server->message_read);
+    self->message_to_encrypt_length = server->message_read_length;
+    self->message_to_encrypt = (unsigned char *)
+    malloc( self->message_to_encrypt_length * sizeof(unsigned char) );
+    strncpy((char*)self->message_to_encrypt, 
+    (char*)server->message_read,(server->message_read_length+1));
 }
 
 void cipher_hill_encryptor_encrypt(cipher_hill_encryptor_t* self){
     matrix_t matrix;
 
     plaintext_t plaintext;
-
-    plaintext_init(&plaintext, sizeof(self->message_to_encrypt));
-    plaintext_set_line(&plaintext,self->message_to_encrypt,sizeof(self->message_to_encrypt));
+    plaintext_init(&plaintext,self->message_to_encrypt_length);
+    plaintext_set_line(&plaintext,self->message_to_encrypt
+                        ,self->message_to_encrypt_length);
 
     plaintext_map_and_filter(&plaintext);
  
@@ -33,11 +35,23 @@ void cipher_hill_encryptor_encrypt(cipher_hill_encryptor_t* self){
     /* no me anda el strcpy
     strncpy(self->message_to_encrypt,plaintext.line);*/
 
-    for( int i=0; i<sizeof(self->message_to_encrypt); i++){
+    self->message_to_encrypt_length = plaintext.line_length;
+    
+    free(self->message_to_encrypt);
+    self->message_to_encrypt = (unsigned char *)malloc
+    ( (self->message_to_encrypt_length+1) * sizeof(unsigned char) );
+
+    for ( int i = 0 ; i < self->message_to_encrypt_length ; i++ ){
         self->message_to_encrypt[i] = plaintext.line[i];
     }
+    
+    self->message_to_encrypt[self->message_to_encrypt_length+1] = '\0';
+
 
     free(plaintext.line);
+    matrix_uninit(&matrix);
+    //deberia hacer free
+    plaintext_uninit(&plaintext); 
 }
 
 void cipher_hill_encryptor_uninit

@@ -13,6 +13,7 @@ void socket_uninit(socket_t* self){
     if (close(self->fd) == -1) {
 		fprintf(stderr, "socket_uninit-->close: %s\n", strerror(errno));
     }
+    printf("Se ha cerrado la conexion\n");
 }
 
 
@@ -30,9 +31,12 @@ bool socket_bind_and_listen
     getaddrinfo(hostname,servicename,&hints,&addr_list);
 
 	for (addr = addr_list; addr && !bind_error; addr = addr->ai_next) {
-        self->fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-		setsockopt(self->fd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
-        if (bind(self->fd, addr->ai_addr, addr->ai_addrlen) == 0) bind_error = true;
+        self->fd = socket
+        (addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+		
+        setsockopt(self->fd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
+        if (bind(self->fd, addr->ai_addr, addr->ai_addrlen) == 0) 
+            bind_error = true;
     }
     freeaddrinfo(addr_list);
     
@@ -63,7 +67,8 @@ int socket_accept(socket_t* listener, socket_t* peer){
 	return fd;
 }
 
-void socket_connect(socket_t* self, const char* hostname, const char* servicename){
+void socket_connect
+(socket_t* self, const char* hostname, const char* servicename){
 	self->fd=0;
   
     struct addrinfo hints;
@@ -78,7 +83,9 @@ void socket_connect(socket_t* self, const char* hostname, const char* servicenam
     getaddrinfo(hostname,servicename,&hints,&results);
 
     for (addr = results; addr ; addr = addr->ai_next) {
-        self->fd = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+        self->fd = socket
+        (addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+
         if ( (connect(self->fd, addr->ai_addr, addr->ai_addrlen)) == -1 ){
             perror("connect");
             printf("%s\n",strerror(errno));
@@ -89,21 +96,19 @@ void socket_connect(socket_t* self, const char* hostname, const char* servicenam
     freeaddrinfo(results);
 
     printf("Se ha generado una conexion \n");
-
-
 }
 
-ssize_t socket_send_message(socket_t* self, char* msg, int size){
+ssize_t socket_send_message(socket_t* self, unsigned char* msg, int size){
 	if (size == 0) return 0;
 
     int remaining_bytes = size;
     int total_bytes_sent = 0;
-    
+
     while (total_bytes_sent < size) {
         ssize_t bytes = send(self->fd, 
                             &msg[total_bytes_sent], 
                              remaining_bytes, MSG_NOSIGNAL);
-
+    
         if (bytes == -1) {
 			fprintf(stderr, "socket_send-->send: %s\n", strerror(errno));
             return bytes;
@@ -112,19 +117,17 @@ ssize_t socket_send_message(socket_t* self, char* msg, int size){
         total_bytes_sent += bytes;
         remaining_bytes -= bytes;
     }
-    
     return total_bytes_sent;
 }
 
-ssize_t socket_receive(socket_t* self, char* buffer, size_t length){
-	if (length == 0) return 0;
+ssize_t socket_receive(socket_t* self, unsigned char* buffer, size_t length){
+	if (length == 0){ return 0; }
     int remaining_bytes = length;
     int total_bytes_received = 0;
 
     while (total_bytes_received < length) {
         ssize_t bytes = recv(self->fd, &buffer[total_bytes_received],
                         remaining_bytes, 0);
-
         if (bytes == -1) {
             fprintf(stderr, "socket_receive-->recv: %s\n", strerror(errno));
             return bytes;
@@ -142,15 +145,15 @@ ssize_t socket_send_size(socket_t* self, short int size){
 
     int remaining_bytes = 2;           //CONSTANTE
     int total_bytes_sent = 0;
-    char buffer[2];
+    unsigned char buffer[2];
     
     _socket_short_to_char(size,buffer);
-        
+
     while (total_bytes_sent < size) {
         ssize_t bytes = send(self->fd, 
                             &buffer[total_bytes_sent],
                             remaining_bytes, MSG_NOSIGNAL);
-
+        
         if (bytes == -1) {
 			fprintf(stderr, "socket_send-->send: %s\n", strerror(errno));
             return bytes;
@@ -159,18 +162,17 @@ ssize_t socket_send_size(socket_t* self, short int size){
         total_bytes_sent += bytes;
         remaining_bytes -= bytes;
     }
-
     return total_bytes_sent;
 }
 
 //https://stackoverflow.com/questions/2952895/copying-a-short-int-to-a-char-array
-void _socket_short_to_char(short int size, char* buffer){
+void _socket_short_to_char(short int size,unsigned  char* buffer){
     buffer[0] = (size >> 8) & 0xff;
     buffer[1] = size & 0xff;
 }
 
 //https://stackoverflow.com/questions/25787349/convert-char-to-short/25787777
-short int _socket_char_to_short(char* buffer){  
+short int _socket_char_to_short(unsigned char* buffer){  
     short int pshort;
 
     pshort = (buffer[0] << 8) | buffer[1];

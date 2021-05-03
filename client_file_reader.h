@@ -20,12 +20,15 @@ typedef struct {
 //-1 en caso de error.
 int file_reader_init(file_reader_t* self, const char* file_name);
 
-void file_reader_read_chunk(file_reader_t* self, client_t* client);
+int file_reader_read_chunk(file_reader_t* self, client_t* client);
 
 //Ciera el archivo abierto en init
 //Pre: un file reader fue inicializado.
 //Post devuelve 0 si el archivo fue cerrado correctamente, 
 //-1 en caso de error.
 int file_reader_uninit(file_reader_t* self);
+
+void file_reader_iterator
+(file_reader_t* self, client_t* client,socket_t* socket);
 
 #endif

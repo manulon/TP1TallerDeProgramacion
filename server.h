@@ -9,7 +9,7 @@
 typedef struct {
     const char*  servicename;
     password_t*  key;
-    char* message_read;
+    unsigned char* message_read;
     short int message_read_length;
 } server_t;
 
@@ -26,8 +26,8 @@ void server_uninit(server_t* self);
 void receive_message_from_client(server_t* self);
 
 //should be private
-void receive_size_from_client(server_t* self, socket_t* peer);
-void receive_line_from_client(server_t* self, socket_t* peer);
+ssize_t receive_size_from_client(server_t* self, socket_t* peer);
+ssize_t receive_line_from_client(server_t* self, socket_t* peer);
 
 void send_encrypted_message_to_client(server_t* self, socket_t* socket);
 
