@@ -18,23 +18,24 @@ int file_reader_init
 
 int file_reader_read_chunk
 (file_reader_t* self, client_t* client){
-    char* chunk;
-    size_t buffer_size = MAX_LINE_SIZE;
+    char* chunk = NULL;
+    size_t buffer_size = 0;
     size_t buffer_read = 0;
-
-    chunk = ( char *)malloc(MAX_LINE_SIZE * sizeof( char));
 
     buffer_read = getline(&chunk,&buffer_size,self->fp);
 
-    if (buffer_read == -1) return 1;
+    if (buffer_read == -1){
+        free(chunk);
+        return 1;
+    }
 
     client->message = (unsigned char *)malloc
     ( (buffer_read+1) * sizeof(unsigned char));
     
     strncpy((char*)client->message,chunk,buffer_read);
-    client->message[buffer_read+1] = '\0';
+    client->message[buffer_read] = 0;
 
-    client->message_length = (buffer_read+1);
+    client->message_length = (buffer_read);
     free(chunk);
 
     return 0;
@@ -63,8 +64,7 @@ void file_reader_iterator
     
         client_decrypt_message(client);
 
-        unsigned char aux[1] = {"\n"};
-        client->message[client->message_length] = aux[0];
+        client->message[client->message_length] = 10;
         fwrite(client->message, sizeof(unsigned char),
          (client->message_length+1), stdout);
         

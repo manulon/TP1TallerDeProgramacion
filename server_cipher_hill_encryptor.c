@@ -11,9 +11,9 @@ void cipher_hill_encryptor_init
     
     self->message_to_encrypt_length = server->message_read_length;
     self->message_to_encrypt = (unsigned char *)
-    malloc( self->message_to_encrypt_length * sizeof(unsigned char) );
+    malloc( (self->message_to_encrypt_length+2) * sizeof(unsigned char) );
     strncpy((char*)self->message_to_encrypt, 
-    (char*)server->message_read,(server->message_read_length+1));
+    (char*)server->message_read,(server->message_read_length));
 }
 
 void cipher_hill_encryptor_encrypt(cipher_hill_encryptor_t* self){
@@ -39,7 +39,7 @@ void cipher_hill_encryptor_encrypt(cipher_hill_encryptor_t* self){
     
     free(self->message_to_encrypt);
     self->message_to_encrypt = (unsigned char *)malloc
-    ( (self->message_to_encrypt_length+1) * sizeof(unsigned char) );
+    ( (self->message_to_encrypt_length+2) * sizeof(unsigned char) );
 
     for ( int i = 0 ; i < self->message_to_encrypt_length ; i++ ){
         self->message_to_encrypt[i] = plaintext.line[i];

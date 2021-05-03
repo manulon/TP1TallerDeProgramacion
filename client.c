@@ -12,7 +12,11 @@ void client_init_connection(client_t* self,socket_t* socket){
     socket_connect(socket,self->hostname,self->servicename);
 }
 
-void client_uninit(client_t* self){}
+void client_uninit(client_t* self){
+    fclose( stdin );
+    fclose( stdout );
+    fclose( stderr );
+}
 
 void client_send_message_to_server(client_t* self,socket_t* socket){
     file_reader_t file_reader;
@@ -32,11 +36,13 @@ ssize_t _client_receive_message(client_t* self, socket_t* peer){
     ssize_t bytes_received = 0;
     bytes_received = socket_receive(peer, buffer, self->message_length);   
     self->message = (unsigned char *)malloc
-    ( (self->message_length) * sizeof(unsigned char));
+    ( (self->message_length+2) * sizeof(unsigned char));
 
     for ( int i = 0 ; i < bytes_received ; i++ ){
         self->message[i] = buffer[i];
     }
+
+    self->message[self->message_length+1] = 0;
 
     return bytes_received;
 }

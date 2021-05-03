@@ -1,5 +1,4 @@
 #include "common_socket.h"
-#include "wrapsocks.h"
 
 void socket_init(socket_t* self, int fd){
 	self->fd = fd;
@@ -13,7 +12,6 @@ void socket_uninit(socket_t* self){
     if (close(self->fd) == -1) {
 		fprintf(stderr, "socket_uninit-->close: %s\n", strerror(errno));
     }
-    printf("Se ha cerrado la conexion\n");
 }
 
 
@@ -33,7 +31,6 @@ bool socket_bind_and_listen
 	for (addr = addr_list; addr && !bind_error; addr = addr->ai_next) {
         self->fd = socket
         (addr->ai_family, addr->ai_socktype, addr->ai_protocol);
-		
         setsockopt(self->fd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
         if (bind(self->fd, addr->ai_addr, addr->ai_addrlen) == 0) 
             bind_error = true;
@@ -70,7 +67,9 @@ int socket_accept(socket_t* listener, socket_t* peer){
 void socket_connect
 (socket_t* self, const char* hostname, const char* servicename){
 	self->fd=0;
-  
+    
+    bool is_connected = false;
+    int s = 0;
     struct addrinfo hints;
     struct addrinfo* results;
     struct addrinfo* addr;
@@ -80,22 +79,35 @@ void socket_connect
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = 0;
     hints.ai_protocol = 0;
-    getaddrinfo(hostname,servicename,&hints,&results);
 
-    for (addr = results; addr ; addr = addr->ai_next) {
+    s = getaddrinfo(hostname,servicename,&hints,&results);
+
+    if (s != 0) {
+        printf("Error en getaddrinfo: %s\n", gai_strerror(s));
+        return;
+    }
+
+    for (addr = results; addr != NULL && !is_connected ; addr = addr->ai_next) {
         self->fd = socket
         (addr->ai_family, addr->ai_socktype, addr->ai_protocol);
 
-        if ( (connect(self->fd, addr->ai_addr, addr->ai_addrlen)) == -1 ){
-            perror("connect");
-            printf("%s\n",strerror(errno));
-            exit(1);
+        if (self->fd == -1){
+            printf("Error: %s\n", strerror(errno));
+        }else{
+            s = connect(self->fd, addr->ai_addr, addr->ai_addrlen);
+            if ( s == -1 ){
+                perror("Error");
+                printf("%s\n",strerror(errno));
+                close(self->fd);
+            }
+            is_connected = (s != -1);
         }
     }
-
     freeaddrinfo(results);
 
-    printf("Se ha generado una conexion \n");
+    if ( is_connected == false ){
+        return;
+    }
 }
 
 ssize_t socket_send_message(socket_t* self, unsigned char* msg, int size){
@@ -146,7 +158,7 @@ ssize_t socket_send_size(socket_t* self, short int size){
     int remaining_bytes = 2;           //CONSTANTE
     int total_bytes_sent = 0;
     unsigned char buffer[2];
-    
+
     _socket_short_to_char(size,buffer);
 
     while (total_bytes_sent < size) {

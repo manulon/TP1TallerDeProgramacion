@@ -1,4 +1,5 @@
 #include "server_matrix.h"
+#include "server_password.h"
 
 #include <math.h>
 #include <stdio.h>

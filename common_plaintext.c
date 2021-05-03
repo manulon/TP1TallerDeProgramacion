@@ -24,15 +24,16 @@ void plaintext_filter
         }
     }
     
-    //pongo el /0 al final.
-    strncpy((char*)self->line,(char*)aux,aux_length);
-    self->line[aux_length+1] = '\0';                            
+    free(self->line);
 
-    //completo con ceros
-    for (int j = (aux_length+2); j < (self->line_length); j++){  
-        self->line[j] = 0;
-    }
     self->line_length = aux_length;
+
+    self->line = (unsigned char *)
+    malloc( (self->line_length+1) * sizeof(unsigned char) );
+    
+    strncpy((char *)self->line,(char *)aux,self->line_length);
+
+    self->line[self->line_length] = 0;
 }
 
 void plaintext_init

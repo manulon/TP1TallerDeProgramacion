@@ -7,14 +7,18 @@
 
 void password_init
 (password_t* self, const char* argv){
-    strncpy((char*)self->line,argv,16);
+    self->line_length = 0;
+    self->line = ( char *)malloc( (strlen(argv)+1) * sizeof(char));
+
+    memcpy((char*)self->line,argv,strlen(argv));
+    self->line[strlen(argv)] = 0;
+
     self->line_length = strlen((char*)self->line);
-    password_calculate_size(self);
 }
 
 void password_uninit
 (password_t* self){
-    // no hace nada, es una formalidad COMO LO DICE EN DISCORD !
+    free(self->line);
 }
 
 void password_map
@@ -22,17 +26,6 @@ void password_map
     for ( int i=0 ; i<self->line_length ; i++ ){ 
         self->line[i] -= 65;
     }
-}
-
-void password_calculate_size
-(password_t *self){
-    int aux_size = 0;
-    for (int i=0 ; i<(self->line_length) ; i++){
-        if ( (self->line[i] > 64) & (self->line[i] < 91) ){
-            aux_size +=1;
-        }
-    }
-    self->line_length = aux_size;
 }
 
 int  password_get_line_length(password_t* self){
