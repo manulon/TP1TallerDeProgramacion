@@ -75,7 +75,12 @@ ssize_t receive_size_from_client(server_t* self, socket_t* peer){
 }
 
 ssize_t receive_line_from_client(server_t* self, socket_t* peer){    
-    unsigned char buffer[MAX_LINE_SIZE];
+    unsigned char* buffer;
+
+    buffer = (unsigned char *)malloc
+    ( (self->message_read_length+1) * sizeof(char));
+
+
     ssize_t bytes_received = 0;
 
     bytes_received = socket_receive(peer, buffer, self->message_read_length);
@@ -84,10 +89,13 @@ ssize_t receive_line_from_client(server_t* self, socket_t* peer){
         self->message_read = (unsigned char *)malloc
         ( (self->message_read_length+1) * sizeof(unsigned char) );
 
-        for (int i=0 ; i < bytes_received ; i++){
+    for (int i=0 ; i < bytes_received ; i++){
             self->message_read[i] = buffer[i];
         }
     }    
+
+    free(buffer);
+
     return bytes_received;
 }
 
