@@ -48,4 +48,4 @@ Para la prueba de *msg_long* tuve una situacion similar. Muchas veces en mi ento
 
 # Diagrama de clases representativo de la solución final:
 
-imagen...
+*ACLARACION* Solo subo un paneo general de las relaciones ya que el programa no esta finalizado en su totalidad![Diagrama sin título](https://user-images.githubusercontent.com/45469722/117068306-7ede4300-ad01-11eb-989e-baf025632c39.png)
