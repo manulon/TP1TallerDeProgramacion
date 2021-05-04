@@ -9,6 +9,9 @@
         "stdlib.h": "c",
         "server_cipher_hill_encryptor.h": "c",
         "stdio.h": "c",
-        "server.h": "c"
+        "server.h": "c",
+        "stdbool.h": "c",
+        "math.h": "c",
+        "server_password.h": "c"
     }
 }

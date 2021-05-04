@@ -40,28 +40,37 @@ bool socket_bind_and_listen(socket_t *self,
                             const char *hostname,
                             const char *servicename);
 
-//Devuelve una lista de posibles direcciones para conectarse.
-struct addrinfo* get_address_info
-(socket_t* self, const char* host, const char* service, int flags);
 
 //Acepta una conexion y devuelve el fd en caso exitoso, -1 en caso de error.
 int socket_accept
 (socket_t *listener, socket_t *peer);
 
-//Devuelve un booleano que dice si la conexion fue exitosa o no.
+//Conecta al socket.
 void socket_connect
 (socket_t *self, const char* hostname, const char* servicename);
 
+//Envia un mensaje msg de largo size.
+//Post: Devuelve la cantidad de bytes enviados
 ssize_t socket_send_message
 (socket_t* self, unsigned char* msg, int size);
+
+//Envia el tamanio de un mensaje en forma de 2 bytes
+//Post: Devuelve la cantidad de bytes enviados.
 ssize_t socket_send_size
 (socket_t* self, short int size);
 
-
+//Recibe una cantidad length de bytes.
+//Post: Devuelve la cantidad de bytes recibidos.
 ssize_t socket_receive
 (socket_t *self, unsigned char *buffer, size_t length);
 
+//Recibe un size y lo representa en un buffer de dos bytes
+//La fuente de dicha funcion esta especificada en el .c
 void _socket_short_to_char(short int size, unsigned char* buffer);
+
+//Recibe un buffer de dos bytes y lo representa en forma de
+//short int.
+//La fuente de dicha funcion esta especificada en el .c
 short int _socket_char_to_short(unsigned char* buffer);
 
 #endif

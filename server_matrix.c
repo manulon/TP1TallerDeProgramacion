@@ -24,9 +24,7 @@ void matrix_init
 }
 
 void matrix_uninit
-(matrix_t* self){
-    //NO HACE NADA COMO SIEMRPE, DISCORD !!!!
-}
+(matrix_t* self){}
 
 void matrix_product
 (matrix_t* self,plaintext_t* plaintext){ 
@@ -39,10 +37,10 @@ void matrix_product
           & (plaintext_get_line_length(plaintext) != 0) ){
         for ( int i=0 ; i < self->dimension ; i++ ){
             plaintext_set(&final_plaintext,i+aux,0);
-            for ( int j=0 ; j < self->dimension ; j++ ){            
-                plaintext_set(&final_plaintext,i+aux,
-                (uint16_t)((plaintext_get(&final_plaintext,i+aux)) +
-                (self->square_matrix[i][j] * plaintext_get(plaintext,j+aux))));
+            for ( int j=0 ; j < self->dimension ; j++ ){
+                uint16_t result = final_plaintext.line[i+aux] +
+                (self->square_matrix[i][j] * plaintext_get(plaintext,j+aux));
+                final_plaintext.line[i+aux] = (unsigned char)(result % 26 );
             }
         }
         aux += self->dimension;
@@ -51,7 +49,6 @@ void matrix_product
     for ( int i=0 ; i < plaintext_get_line_length(plaintext) ; i++ ){
         plaintext_set(plaintext,i,plaintext_get(&final_plaintext,i));
     }
-    //deberia hacer free
     plaintext_uninit(&final_plaintext);
 }
 

@@ -1,9 +1,6 @@
 #include "server.h"
-#include "server_cipher_hill_encryptor.h"
 #include "server_password.h"
-
-//Lee los parametros pasados por linea de comandos para
-//inicializar el servidor.
+#include "server_cipher_hill_encryptor.h"
 
 void server_init(server_t* self, char* const* argv, password_t* key) {
     self->servicename = argv[1];
@@ -30,11 +27,12 @@ void receive_message_from_client(server_t* self) {
     bind_and_listen_ok =
         socket_bind_and_listen(&socket, NULL, self->servicename);
     socket_accept(&socket, &peer);
+
     if ( bind_and_listen_ok == true ){
         ssize_t bytes_received;
 
-        bytes_received = receive_size_from_client(self,&peer);    
-        bytes_received += receive_line_from_client(self,&peer);
+        bytes_received = _receive_size_from_client(self,&peer);    
+        bytes_received += _receive_line_from_client(self,&peer);
 
         while (bytes_received > 0){
             cipher_hill_encryptor_init(&encryptor,self);
@@ -42,26 +40,29 @@ void receive_message_from_client(server_t* self) {
 
             free(self->message_read);
             self->message_read_length = encryptor.message_to_encrypt_length;
-            self->message_read = (unsigned char *)malloc
-                ( (self->message_read_length+1) * sizeof(unsigned char));
+                
+            self->message_read = (unsigned char*)
+                calloc(self->message_read_length+1,sizeof(char));
+
 
             for ( int i = 0 ; i < self->message_read_length ; i++ ){
-                self->message_read[i] = (encryptor.message_to_encrypt[i] % 26);
+                self->message_read[i] = (encryptor.message_to_encrypt[i]);
             }
 
             cipher_hill_encryptor_uninit(&encryptor);
+            
             send_encrypted_message_to_client(self,&peer);
-            bytes_received = receive_size_from_client(self,&peer);    
-            bytes_received += receive_line_from_client(self,&peer);
+
+            bytes_received = _receive_size_from_client(self,&peer);    
+            bytes_received += _receive_line_from_client(self,&peer);
         }
     }
         socket_uninit(&socket);
         socket_uninit(&peer);
 }
 
-
-ssize_t receive_size_from_client(server_t* self, socket_t* peer){
-    unsigned char buffer[2];                     //constante ¡?¡?
+ssize_t _receive_size_from_client(server_t* self, socket_t* peer){
+    unsigned char buffer[2];                    
     ssize_t bytes_received = 0;
     
     bytes_received = socket_receive(peer, buffer, 2);
@@ -74,11 +75,11 @@ ssize_t receive_size_from_client(server_t* self, socket_t* peer){
     return bytes_received;
 }
 
-ssize_t receive_line_from_client(server_t* self, socket_t* peer){    
+ssize_t _receive_line_from_client(server_t* self, socket_t* peer){    
     unsigned char* buffer;
 
-    buffer = (unsigned char *)malloc
-    ( (self->message_read_length+1) * sizeof(char));
+    buffer = (unsigned char*)
+    calloc(self->message_read_length+1,sizeof(char));
 
 
     ssize_t bytes_received = 0;
@@ -86,8 +87,8 @@ ssize_t receive_line_from_client(server_t* self, socket_t* peer){
     bytes_received = socket_receive(peer, buffer, self->message_read_length);
     
     if ( bytes_received > 0 ){
-        self->message_read = (unsigned char *)malloc
-        ( (self->message_read_length+1) * sizeof(unsigned char) );
+        self->message_read = (unsigned char*)
+            calloc(self->message_read_length+1,sizeof(char));
 
     for (int i=0 ; i < bytes_received ; i++){
             self->message_read[i] = buffer[i];

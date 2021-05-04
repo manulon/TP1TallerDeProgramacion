@@ -5,14 +5,14 @@
 #include <stdbool.h>
 #include <string.h>
 
-void plaintext_map
+void _plaintext_map
 (plaintext_t* self){   
     for ( int i=0 ; i<self->line_length ; i++ ){ 
         self->line[i] -= 65;
     }
 }
 
-void plaintext_filter
+void _plaintext_filter
 (plaintext_t* self){
     unsigned char aux[self->line_length];
     int aux_length = 0;
@@ -39,7 +39,7 @@ void plaintext_filter
 void plaintext_init
 (plaintext_t* self, int length){
     self->line_length = length;
-    self->line = (unsigned char *)malloc( length+1 * sizeof(unsigned char) );
+    self->line = (unsigned char*)calloc(length+1,sizeof(char));
     self->line[length] = 0;
 }
 
@@ -70,9 +70,9 @@ void plaintext_fill_with_zero
 
 void plaintext_map_and_filter
 (plaintext_t* self){
-    plaintext_filter(self);
+    _plaintext_filter(self);
     if ( self->line_length != 0 ){
-        plaintext_map(self);
+        _plaintext_map(self);
     }    
 }
 

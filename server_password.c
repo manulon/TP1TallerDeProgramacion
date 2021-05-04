@@ -8,7 +8,8 @@
 void password_init
 (password_t* self, const char* argv){
     self->line_length = 0;
-    self->line = ( char *)malloc( (strlen(argv)+1) * sizeof(char));
+
+    self->line = calloc(strlen(argv)+1,sizeof(char));
 
     memcpy((char*)self->line,argv,strlen(argv));
     self->line[strlen(argv)] = 0;

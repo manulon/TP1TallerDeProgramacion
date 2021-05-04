@@ -28,9 +28,8 @@ int file_reader_read_chunk
         free(chunk);
         return 1;
     }
-
-    client->message = (unsigned char *)malloc
-    ( (buffer_read+1) * sizeof(unsigned char));
+    
+    client->message = calloc(buffer_read+1, sizeof(char));
     
     strncpy((char*)client->message,chunk,buffer_read);
     client->message[buffer_read] = 0;
