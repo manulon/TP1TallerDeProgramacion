@@ -34,7 +34,7 @@ void client_receive_encrypted_message_from_server
 ssize_t _client_receive_message(client_t* self, socket_t* peer){
     unsigned char buffer[MAX_LINE_SIZE];
     ssize_t bytes_received = 0;
-    bytes_received = socket_receive(peer, buffer, self->message_length);   
+    bytes_received = socket_receive(peer, buffer, self->message_length);  
     self->message = (unsigned char *)malloc
     ( (self->message_length+2) * sizeof(unsigned char));
 
@@ -54,7 +54,6 @@ ssize_t _client_receive_size(client_t* self, socket_t* peer){
     bytes_received = socket_receive(peer, buffer, 2);
 
     short int size = _socket_char_to_short(buffer);
-
     self->message_length = size;
     return bytes_received;
 }

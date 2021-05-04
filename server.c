@@ -8,7 +8,8 @@
 void server_init(server_t* self, char* const* argv, password_t* key) {
     self->servicename = argv[1];
     self->key = key;
-    
+    self->message_read_length = 0;
+
     password_map(self->key);
     printf("Servidor inicializado... esperando conexion.. \n");
 }
