@@ -14,9 +14,9 @@ void server_init(server_t* self, char* const* argv, password_t* key) {
 }
 
 void server_uninit(server_t* self){
-    fclose( stdin );
-    fclose( stdout );
-    fclose( stderr );
+    fclose(stdin);
+    fclose(stdout);
+    fclose(stderr);
 }
 
 void receive_message_from_client(server_t* self) {
@@ -45,7 +45,7 @@ void receive_message_from_client(server_t* self) {
                 ( (self->message_read_length+1) * sizeof(unsigned char));
 
             for ( int i = 0 ; i < self->message_read_length ; i++ ){
-                self->message_read[i] = encryptor.message_to_encrypt[i];
+                self->message_read[i] = (encryptor.message_to_encrypt[i] % 26);
             }
 
             cipher_hill_encryptor_uninit(&encryptor);
@@ -69,6 +69,7 @@ ssize_t receive_size_from_client(server_t* self, socket_t* peer){
         short int size = _socket_char_to_short(buffer);
         self->message_read_length = size;
     }
+    
     return bytes_received;
 }
 

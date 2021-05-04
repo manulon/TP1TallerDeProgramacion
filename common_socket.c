@@ -111,10 +111,15 @@ void socket_connect
 }
 
 ssize_t socket_send_message(socket_t* self, unsigned char* msg, int size){
-	if (size == 0) return 0;
-
-    int remaining_bytes = size;
+	int remaining_bytes = size;
     int total_bytes_sent = 0;
+
+    if (size == 0){
+        ssize_t bytes = send(self->fd, 
+                            &msg[total_bytes_sent], 
+                             remaining_bytes, MSG_NOSIGNAL);
+        total_bytes_sent += bytes;
+    }
 
     while (total_bytes_sent < size) {
         ssize_t bytes = send(self->fd, 
@@ -153,13 +158,18 @@ ssize_t socket_receive(socket_t* self, unsigned char* buffer, size_t length){
 }
 
 ssize_t socket_send_size(socket_t* self, short int size){
-	if (size == 0) return 0;
-
     int remaining_bytes = 2;           //CONSTANTE
     int total_bytes_sent = 0;
     unsigned char buffer[2];
 
     _socket_short_to_char(size,buffer);
+
+    if (size == 0){
+        ssize_t bytes = send(self->fd, 
+                            &buffer[total_bytes_sent],
+                            remaining_bytes, MSG_NOSIGNAL);
+        remaining_bytes -= bytes;
+    } 
 
     while (total_bytes_sent < size) {
         ssize_t bytes = send(self->fd, 

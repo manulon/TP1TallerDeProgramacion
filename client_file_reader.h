@@ -2,7 +2,7 @@
 #define CLIENT_FILE_READER_H
 
 #define  _POSIX_C_SOURCE 200809L
-#define  MAX_LINE_SIZE 40
+#define  MAX_LINE_SIZE 200
 #include <stdio.h>
 #include <stdlib.h>
 #include "server_password.h"

@@ -25,18 +25,18 @@ void cipher_hill_encryptor_encrypt(cipher_hill_encryptor_t* self){
                         ,self->message_to_encrypt_length);
 
     plaintext_map_and_filter(&plaintext);
- 
+    
+
     matrix_init(&matrix,*(self->password));
 
     plaintext_fill_with_zero(&plaintext,matrix_get_dimension(&matrix));
 
     matrix_product(&matrix,&plaintext);
-    
     /* no me anda el strcpy
     strncpy(self->message_to_encrypt,plaintext.line);*/
 
     self->message_to_encrypt_length = plaintext.line_length;
-    
+        
     free(self->message_to_encrypt);
     self->message_to_encrypt = (unsigned char *)malloc
     ( (self->message_to_encrypt_length+2) * sizeof(unsigned char) );
@@ -44,14 +44,12 @@ void cipher_hill_encryptor_encrypt(cipher_hill_encryptor_t* self){
     for ( int i = 0 ; i < self->message_to_encrypt_length ; i++ ){
         self->message_to_encrypt[i] = plaintext.line[i];
     }
-    
+        
     self->message_to_encrypt[self->message_to_encrypt_length+1] = '\0';
-
-
-    free(plaintext.line);
     matrix_uninit(&matrix);
-    //deberia hacer free
     plaintext_uninit(&plaintext); 
+    
+    //plaintext_uninit(&plaintext); 
 }
 
 void cipher_hill_encryptor_uninit

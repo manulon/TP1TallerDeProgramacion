@@ -13,9 +13,9 @@ void client_init_connection(client_t* self,socket_t* socket){
 }
 
 void client_uninit(client_t* self){
-    fclose( stdin );
-    fclose( stdout );
-    fclose( stderr );
+    fclose(stdin);
+    fclose(stdout);
+    fclose(stderr);
 }
 
 void client_send_message_to_server(client_t* self,socket_t* socket){
@@ -56,12 +56,11 @@ ssize_t _client_receive_size(client_t* self, socket_t* peer){
     short int size = _socket_char_to_short(buffer);
 
     self->message_length = size;
-
     return bytes_received;
 }
 
 void client_decrypt_message(client_t *self){
     for ( int i=0 ; i<self->message_length ; i++ ){ 
-        self->message[i] = (self->message[i]) % 26 + 65;
+        self->message[i] = (self->message[i]) + 65;
     }
 }

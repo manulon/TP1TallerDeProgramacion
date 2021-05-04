@@ -34,7 +34,6 @@ int file_reader_read_chunk
     
     strncpy((char*)client->message,chunk,buffer_read);
     client->message[buffer_read] = 0;
-
     client->message_length = (buffer_read);
     free(chunk);
 

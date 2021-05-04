@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <stdint.h>
 
 void matrix_init
 (matrix_t* self, password_t password){
@@ -32,6 +32,7 @@ void matrix_product
 (matrix_t* self,plaintext_t* plaintext){ 
     int aux = 0;
     plaintext_t final_plaintext;
+
     plaintext_init(&final_plaintext, plaintext_get_line_length(plaintext));
     
     while ( (aux < (plaintext_get_line_length(plaintext))) 
@@ -40,8 +41,8 @@ void matrix_product
             plaintext_set(&final_plaintext,i+aux,0);
             for ( int j=0 ; j < self->dimension ; j++ ){            
                 plaintext_set(&final_plaintext,i+aux,
-                (plaintext_get(&final_plaintext,i+aux)) +
-                (self->square_matrix[i][j] * plaintext_get(plaintext,j+aux)));
+                (uint16_t)((plaintext_get(&final_plaintext,i+aux)) +
+                (self->square_matrix[i][j] * plaintext_get(plaintext,j+aux))));
             }
         }
         aux += self->dimension;
@@ -50,7 +51,6 @@ void matrix_product
     for ( int i=0 ; i < plaintext_get_line_length(plaintext) ; i++ ){
         plaintext_set(plaintext,i,plaintext_get(&final_plaintext,i));
     }
-    free(final_plaintext.line);
     //deberia hacer free
     plaintext_uninit(&final_plaintext);
 }

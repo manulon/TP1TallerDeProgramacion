@@ -1,7 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#define MAX_LINE_SIZE 40  
+#define MAX_LINE_SIZE 200  
 #include "server_password.h"
 #include "common_plaintext.h"
 #include "common_socket.h"

@@ -30,7 +30,7 @@ void plaintext_filter
 
     self->line = (unsigned char *)
     malloc( (self->line_length+1) * sizeof(unsigned char) );
-    
+        
     strncpy((char *)self->line,(char *)aux,self->line_length);
 
     self->line[self->line_length] = 0;
@@ -39,12 +39,13 @@ void plaintext_filter
 void plaintext_init
 (plaintext_t* self, int length){
     self->line_length = length;
-    self->line = (unsigned char *)malloc( length * sizeof(unsigned char) );
+    self->line = (unsigned char *)malloc( length+1 * sizeof(unsigned char) );
+    self->line[length] = 0;
 }
 
 void plaintext_uninit
 (plaintext_t* self){
-    //NO HACE NADA DISCORDDDDDDDD
+    free(self->line);
 }
 
 void plaintext_fill_with_zero
@@ -72,7 +73,7 @@ void plaintext_map_and_filter
     plaintext_filter(self);
     if ( self->line_length != 0 ){
         plaintext_map(self);
-    }
+    }    
 }
 
 int  plaintext_get_line_length(plaintext_t* self){
