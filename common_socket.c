@@ -1,10 +1,12 @@
 #include "common_socket.h"
 
-void socket_init(socket_t* self, int fd){
+void socket_init
+(socket_t* self, int fd){
 	self->fd = fd;
 }
 
-void socket_uninit(socket_t* self){
+void socket_uninit
+(socket_t* self){
 	if (!self) {return;}
     if (shutdown(self->fd, SHUT_RDWR) == -1) {
 		fprintf(stderr, "socket_uninit-->shutdown: %s\n", strerror(errno));
@@ -13,7 +15,6 @@ void socket_uninit(socket_t* self){
 		fprintf(stderr, "socket_uninit-->close: %s\n", strerror(errno));
     }
 }
-
 
 bool socket_bind_and_listen
 (socket_t* self, const char* hostname, const char* servicename){
@@ -52,7 +53,8 @@ bool socket_bind_and_listen
 	return true;
 }
 
-int socket_accept(socket_t* listener, socket_t* peer){
+int socket_accept
+(socket_t* listener, socket_t* peer){
 	int fd = -1;
     
 	if ((peer->fd = accept(listener->fd, NULL, NULL)) < 0) {
@@ -108,77 +110,6 @@ void socket_connect
     if ( is_connected == false ){
         return;
     }
-}
-
-ssize_t socket_send_message(socket_t* self, unsigned char* msg, int size){
-	int remaining_bytes = size;
-    int total_bytes_sent = 0;
-
-    if (size == 0){
-        return total_bytes_sent;
-    }
-
-    while (total_bytes_sent < size) {
-        ssize_t bytes = send(self->fd, 
-                            &msg[total_bytes_sent], 
-                             remaining_bytes, MSG_NOSIGNAL);
-    
-        if (bytes == -1) {
-			fprintf(stderr, "socket_send-->send: %s\n", strerror(errno));
-            return bytes;
-        }
-        if (bytes == 0) break;
-        total_bytes_sent += bytes;
-        remaining_bytes -= bytes;
-    }
-    return total_bytes_sent;
-}
-
-ssize_t socket_receive(socket_t* self, unsigned char* buffer, size_t length){
-	if (length == 0){ return 0; }
-    int remaining_bytes = length;
-    int total_bytes_received = 0;
-
-    while (total_bytes_received < length) {
-        ssize_t bytes = recv(self->fd, &buffer[total_bytes_received],
-                        remaining_bytes, 0);
-        if (bytes == -1) {
-            fprintf(stderr, "socket_receive-->recv: %s\n", strerror(errno));
-            return bytes;
-        }
-        if (bytes == 0) break;
-        
-        total_bytes_received += bytes;
-        remaining_bytes -= bytes;
-    }
-    return total_bytes_received;
-}
-
-ssize_t socket_send_size(socket_t* self, short int size){
-    int remaining_bytes = 2;           //CONSTANTE
-    int total_bytes_sent = 0;
-    unsigned char buffer[2];
-
-    _socket_short_to_char(size,buffer);
-
-    if (size == 0){
-        return total_bytes_sent;
-    } 
-
-    while (total_bytes_sent < 2) {
-        ssize_t bytes = send(self->fd, 
-                            &buffer[total_bytes_sent],
-                            remaining_bytes, MSG_NOSIGNAL);
-        
-        if (bytes == -1) {
-			fprintf(stderr, "socket_send-->send: %s\n", strerror(errno));
-            return bytes;
-        }
-        if (bytes == 0) break;
-        total_bytes_sent += bytes;
-        remaining_bytes -= bytes;
-    }
-    return total_bytes_sent;
 }
 
 //https://stackoverflow.com/questions/2952895/copying-a-short-int-to-a-char-array

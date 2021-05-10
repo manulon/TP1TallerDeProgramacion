@@ -49,16 +49,6 @@ int socket_accept
 void socket_connect
 (socket_t *self, const char* hostname, const char* servicename);
 
-//Envia un mensaje msg de largo size.
-//Post: Devuelve la cantidad de bytes enviados
-ssize_t socket_send_message
-(socket_t* self, unsigned char* msg, int size);
-
-//Envia el tamanio de un mensaje en forma de 2 bytes
-//Post: Devuelve la cantidad de bytes enviados.
-ssize_t socket_send_size
-(socket_t* self, short int size);
-
 //Recibe una cantidad length de bytes.
 //Post: Devuelve la cantidad de bytes recibidos.
 ssize_t socket_receive

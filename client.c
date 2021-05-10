@@ -39,6 +39,7 @@ void _client_decrypt_message(client_t *self){
 }
 
 void _client_print_message(client_t* self){
+    /*sirve con el barra ene?????*/
     self->message[self->message_length] = 10;
     fwrite(self->message, sizeof(unsigned char),
     (self->message_length+1), stdout);
