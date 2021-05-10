@@ -41,5 +41,13 @@ void _client_print_message
 void client_init_connection
 (client_t* self,socket_t* socket);
 
+void client_set_message_length(client_t* self, int len);
+
+void client_set_message(client_t* self, unsigned char* msg);
+
+unsigned char* client_get_message(client_t* self);
+
+int client_get_message_length(client_t* self);
+
 
 #endif

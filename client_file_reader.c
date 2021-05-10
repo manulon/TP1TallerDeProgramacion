@@ -26,11 +26,9 @@ bool file_reader_read_chunk
         return false;
     }
     
-    client->message = calloc(buffer_read+1, sizeof(char));
-    
-    strncpy((char*)client->message,chunk,buffer_read);
-    client->message[buffer_read] = 0;
-    client->message_length = (buffer_read);
+    client_set_message_length(client,buffer_read);
+    client_set_message(client,(unsigned char*)chunk);
+
     free(chunk);
 
     return true;

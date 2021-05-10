@@ -46,3 +46,23 @@ void _client_print_message(client_t* self){
      
     free(self->message);
 }
+
+void client_set_message_length(client_t* self, int len){
+    self->message_length = len;
+}
+
+void client_set_message(client_t* self, unsigned char* msg){
+    self->message = 
+        calloc(self->message_length+1, sizeof(char));
+    
+    strncpy((char*)self->message,(char*)msg,self->message_length);
+    self->message[self->message_length] = 0;
+}
+
+unsigned char* client_get_message(client_t* self){
+    return self->message;
+}
+
+int client_get_message_length(client_t* self){
+    return self->message_length;
+}

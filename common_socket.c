@@ -18,7 +18,7 @@ void socket_uninit
 
 bool socket_bind_and_listen
 (socket_t* self, const char* hostname, const char* servicename){
-    bool bind_error = false;
+    bool is_connected = false;
 	int val = 1;
 	struct addrinfo *addr, *addr_list;
     struct addrinfo hints;
@@ -29,16 +29,16 @@ bool socket_bind_and_listen
     hints.ai_flags = AI_PASSIVE;
     getaddrinfo(hostname,servicename,&hints,&addr_list);
 
-	for (addr = addr_list; addr && !bind_error; addr = addr->ai_next) {
+	for (addr = addr_list; addr && !is_connected; addr = addr->ai_next) {
         self->fd = socket
         (addr->ai_family, addr->ai_socktype, addr->ai_protocol);
         setsockopt(self->fd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
         if (bind(self->fd, addr->ai_addr, addr->ai_addrlen) == 0) 
-            bind_error = true;
+            is_connected = true;
     }
     freeaddrinfo(addr_list);
     
-    if (!bind_error) {
+    if (!is_connected) {
 		fprintf(stderr, "socket_bind_and_listen-->bind: %s\n", strerror(errno));
         return false;
     }
