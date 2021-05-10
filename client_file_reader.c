@@ -3,9 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_STDIN_SIZE 100
-
-
 int file_reader_init
 (file_reader_t* self, const char* file_name) {
     if (strcmp(file_name, "-") == 0){
@@ -16,7 +13,7 @@ int file_reader_init
     return 0;
 }
 
-int file_reader_read_chunk
+bool file_reader_read_chunk
 (file_reader_t* self, client_t* client){
     char* chunk = NULL;
     size_t buffer_size = 0;
@@ -26,7 +23,7 @@ int file_reader_read_chunk
 
     if (buffer_read == -1){
         free(chunk);
-        return 1;
+        return false;
     }
     
     client->message = calloc(buffer_read+1, sizeof(char));
@@ -36,7 +33,7 @@ int file_reader_read_chunk
     client->message_length = (buffer_read);
     free(chunk);
 
-    return 0;
+    return true;
 }
 
 int file_reader_uninit
@@ -48,26 +45,4 @@ int file_reader_uninit
     }
     return 0;
 }
-
-void file_reader_iterator
-(file_reader_t* self, client_t* client,socket_t* socket){
-    int feof = file_reader_read_chunk(self,client);
-    while (!feof){
-        socket_send_size(socket,(short int)client->message_length);
-        socket_send_message(socket,client->message,client->message_length);
-
-        free(client->message); 
-        
-        client_receive_encrypted_message_from_server(client,socket);
     
-        client_decrypt_message(client);
-
-        client->message[client->message_length] = 10;
-        fwrite(client->message, sizeof(unsigned char),
-         (client->message_length+1), stdout);
-        
-        free(client->message);
-
-        feof = file_reader_read_chunk(self,client);
-    }
-}

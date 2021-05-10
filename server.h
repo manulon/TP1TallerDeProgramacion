@@ -18,22 +18,15 @@ typedef struct {
 //mensajes.
 void server_init(server_t* self, char* const* argv, password_t* key);
 
+bool _server_init_connection
+(server_t* self, socket_t* socket,socket_t* peer);
+
 //Se cierra al servidor y asi a los archivos necesarios.
 void server_uninit(server_t* self);
 
 //Recibe un mensaje cifrado del cliente y lo encripta
 //para luego enviarselo de nuevo al cliente.
 //La encriptacion es delegada
-void receive_message_from_client(server_t* self);
-
-//Recibe un buffer de 2 bytes que representa el largo del
-//mensaje que luego recibira del cliente.
-ssize_t _receive_size_from_client(server_t* self, socket_t* peer);
-
-//Recibe el mensaje a encriptar del cliente.
-ssize_t _receive_line_from_client(server_t* self, socket_t* peer);
-
-//Delega el envio de mensajes al cliente.
-void send_encrypted_message_to_client(server_t* self, socket_t* socket);
+void client_communicate_with_client(server_t* self);
 
 #endif

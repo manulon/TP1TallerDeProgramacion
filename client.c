@@ -1,5 +1,6 @@
 #include "client.h"
 #include "client_file_reader.h"
+#include "client_protocol.h"
 
 void client_init(client_t* self, char** argv){
     self->hostname = argv[1];
@@ -12,58 +13,35 @@ void client_init_connection(client_t* self,socket_t* socket){
     socket_connect(socket,self->hostname,self->servicename);
 }
 
-void client_uninit(client_t* self){
-    fclose(stdin);
-    fclose(stdout);
-    fclose(stderr);
-}
+void client_uninit(client_t* self){}
 
-void client_send_message_to_server(client_t* self,socket_t* socket){
+void client_communicate_with_server(client_t* self,socket_t* socket){
     file_reader_t file_reader;
+    client_protocol_t protocol;
+
     file_reader_init(&file_reader, self->filename);
-    file_reader_iterator(&file_reader,self,socket);
+    client_protocol_init(&protocol,socket,self);
+
+    while(file_reader_read_chunk(&file_reader,self)){
+        client_protocol_start(&protocol);
+        _client_decrypt_message(self);
+        _client_print_message(self);
+    }
+    
+    client_protocol_uninit(&protocol);
     file_reader_uninit(&file_reader);
 }
 
-void client_receive_encrypted_message_from_server
-(client_t* self, socket_t* peer){
-    _client_receive_size(self,peer);
-    _client_receive_message(self,peer);
-}
-
-ssize_t _client_receive_message(client_t* self, socket_t* peer){
-     unsigned char* buffer;
-
-    buffer = calloc(self->message_length+1,sizeof(char));
-
-    ssize_t bytes_received = 0;
-    bytes_received = socket_receive(peer, buffer, self->message_length);  
-    
-    self->message = calloc(self->message_length+2,sizeof(char));
-    self->message[self->message_length+1] = 0;
-    
-    for ( int i = 0 ; i < bytes_received ; i++ ){
-        self->message[i] = buffer[i];
-    }
-
-    free(buffer);
-
-    return bytes_received;
-}
-
-ssize_t _client_receive_size(client_t* self, socket_t* peer){
-    unsigned char buffer[2];                    
-    ssize_t bytes_received;
-
-    bytes_received = socket_receive(peer, buffer, 2);
-
-    short int size = _socket_char_to_short(buffer);
-    self->message_length = size;
-    return bytes_received;
-}
-
-void client_decrypt_message(client_t *self){
+void _client_decrypt_message(client_t *self){
     for ( int i=0 ; i<self->message_length ; i++ ){ 
         self->message[i] = (self->message[i]) + 65;
     }
+}
+
+void _client_print_message(client_t* self){
+    self->message[self->message_length] = 10;
+    fwrite(self->message, sizeof(unsigned char),
+    (self->message_length+1), stdout);
+     
+    free(self->message);
 }

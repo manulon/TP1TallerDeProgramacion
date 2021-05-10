@@ -25,7 +25,7 @@ bool socket_bind_and_listen
     memset(&hints, 0, sizeof(struct addrinfo));
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = 0;
+    hints.ai_flags = AI_PASSIVE;
     getaddrinfo(hostname,servicename,&hints,&addr_list);
 
 	for (addr = addr_list; addr && !bind_error; addr = addr->ai_next) {
@@ -115,10 +115,7 @@ ssize_t socket_send_message(socket_t* self, unsigned char* msg, int size){
     int total_bytes_sent = 0;
 
     if (size == 0){
-        ssize_t bytes = send(self->fd, 
-                            &msg[total_bytes_sent], 
-                             remaining_bytes, MSG_NOSIGNAL);
-        total_bytes_sent += bytes;
+        return total_bytes_sent;
     }
 
     while (total_bytes_sent < size) {
@@ -165,13 +162,10 @@ ssize_t socket_send_size(socket_t* self, short int size){
     _socket_short_to_char(size,buffer);
 
     if (size == 0){
-        ssize_t bytes = send(self->fd, 
-                            &buffer[total_bytes_sent],
-                            remaining_bytes, MSG_NOSIGNAL);
-        remaining_bytes -= bytes;
+        return total_bytes_sent;
     } 
 
-    while (total_bytes_sent < size) {
+    while (total_bytes_sent < 2) {
         ssize_t bytes = send(self->fd, 
                             &buffer[total_bytes_sent],
                             remaining_bytes, MSG_NOSIGNAL);

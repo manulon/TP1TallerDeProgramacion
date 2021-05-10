@@ -23,25 +23,16 @@ void client_uninit
 (client_t* self);
 
 //Delega responsabilidad de enviar mensajes al servidor
-void client_send_message_to_server
-(client_t* self, socket_t* socket);
-
-//Recibe un mensaje del servidor. Metodo privado.
-//Post: devuelve la cantidad de bytes recibidos por parte
-//del servidor.
-ssize_t _client_receive_message
-(client_t* self, socket_t* peer);
-
-//Recibe el largo del mensaje que sera recibido del servidor.
-//Post: devuelve la cantidad de bytes recibidos por parte
-//del servidor.
-ssize_t _client_receive_size
-(client_t* self, socket_t* peer);
+void client_communicate_with_server
+(client_t* self,socket_t* socket);
 
 //Desencripta el mensaje recibido desde el servidor
 //Pre: Le llega un mensaje bien encriptado.
 //Post: El mensaje es desencriptado.
-void client_decrypt_message
+void _client_decrypt_message
+(client_t* self);
+
+void _client_print_message
 (client_t* self);
 
 //Hace un socket connect para entablecer la conexion con el 
@@ -50,8 +41,5 @@ void client_decrypt_message
 void client_init_connection
 (client_t* self,socket_t* socket);
 
-//Delega envio del mensaje encriptado.
-void client_receive_encrypted_message_from_server
-(client_t* self,socket_t* peer);
 
 #endif

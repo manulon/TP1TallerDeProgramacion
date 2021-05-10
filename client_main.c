@@ -13,7 +13,7 @@ int main(int argc, char* argv[]){
 
     client_init_connection(&client,&socket);
 
-    client_send_message_to_server(&client,&socket);
+    client_communicate_with_server(&client,&socket);
 
     client_uninit(&client);
     socket_uninit(&socket); // iria en uninit connection !!!
