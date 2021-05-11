@@ -26,7 +26,7 @@ typedef struct {
 } socket_t;
 
 //Inicializa un socket con su file descriptor asociado.
-void socket_init(socket_t *self, int fd);
+void socket_init(socket_t *self, int family, int socktype, int protocol);
 
 //Cierra el socket.
 //Pre: se ha inicializado un socket.

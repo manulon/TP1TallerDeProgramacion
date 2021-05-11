@@ -1,8 +1,8 @@
 #include "common_socket.h"
 
 void socket_init
-(socket_t* self, int fd){
-	self->fd = fd;
+(socket_t *self, int family, int socktype, int protocol){
+	self->fd = socket(family,socktype,protocol);
 }
 
 void socket_uninit
@@ -30,8 +30,8 @@ bool socket_bind_and_listen
     getaddrinfo(hostname,servicename,&hints,&addr_list);
 
 	for (addr = addr_list; addr && !is_connected; addr = addr->ai_next) {
-        self->fd = socket
-        (addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+        socket_init
+            (self,addr->ai_family, addr->ai_socktype, addr->ai_protocol);
         setsockopt(self->fd, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val));
         if (bind(self->fd, addr->ai_addr, addr->ai_addrlen) == 0) 
             is_connected = true;
@@ -42,8 +42,6 @@ bool socket_bind_and_listen
 		fprintf(stderr, "socket_bind_and_listen-->bind: %s\n", strerror(errno));
         return false;
     }
-
-	socket_init(self, self->fd);
 
 	if (listen(self->fd, 10) < 0) {
 		socket_uninit(self);
