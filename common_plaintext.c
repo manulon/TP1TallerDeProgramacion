@@ -29,18 +29,18 @@ void _plaintext_filter
     self->line_length = aux_length;
 
     self->line = (unsigned char *)
-    malloc( (self->line_length+1) * sizeof(unsigned char) );
+    malloc( (self->line_length+2) * sizeof(unsigned char) );
         
     strncpy((char *)self->line,(char *)aux,self->line_length);
 
-    self->line[self->line_length] = 0;
+    self->line[self->line_length+1] = 0;
 }
 
 void plaintext_init
 (plaintext_t* self, int length){
     self->line_length = length;
-    self->line = (unsigned char*)calloc(length+1,sizeof(char));
-    self->line[length] = 0;
+    self->line = (unsigned char*)calloc(length+2,sizeof(char));
+    self->line[length+1] = 0;
 }
 
 void plaintext_uninit
