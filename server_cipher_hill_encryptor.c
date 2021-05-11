@@ -27,25 +27,14 @@ void cipher_hill_encryptor_encrypt(cipher_hill_encryptor_t* self){
 
     plaintext_map_and_filter(&plaintext);
     
-
     matrix_init(&matrix,*(self->password));
 
     plaintext_fill_with_zero(&plaintext,matrix_get_dimension(&matrix));
 
     matrix_product(&matrix,&plaintext);
    
-    self->message_to_encrypt_length = plaintext.line_length;
-        
-    free(self->message_to_encrypt);
-  
-    self->message_to_encrypt = 
-        calloc(self->message_to_encrypt_length+2, sizeof(char));
+    _get_new_message_to_encrypt(self,&plaintext);
 
-    for ( int i = 0 ; i < self->message_to_encrypt_length ; i++ ){
-        self->message_to_encrypt[i] = plaintext.line[i];
-    }
-        
-    self->message_to_encrypt[self->message_to_encrypt_length+1] = '\0';
     matrix_uninit(&matrix);
     plaintext_uninit(&plaintext); 
 }
@@ -53,4 +42,21 @@ void cipher_hill_encryptor_encrypt(cipher_hill_encryptor_t* self){
 void cipher_hill_encryptor_uninit
 (cipher_hill_encryptor_t* self){
     free(self->message_to_encrypt);
+}
+
+void _get_new_message_to_encrypt
+(cipher_hill_encryptor_t* self,plaintext_t* plaintext){
+    self->message_to_encrypt_length = plaintext->line_length;
+        
+    free(self->message_to_encrypt);
+  
+    self->message_to_encrypt = 
+        calloc(self->message_to_encrypt_length+2, sizeof(char));
+
+    for ( int i = 0 ; i < self->message_to_encrypt_length ; i++ ){
+        self->message_to_encrypt[i] = plaintext->line[i];
+    }
+        
+    self->message_to_encrypt[self->message_to_encrypt_length+1] = '\0';
+    
 }

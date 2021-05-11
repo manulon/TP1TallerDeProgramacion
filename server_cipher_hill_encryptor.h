@@ -27,4 +27,7 @@ void cipher_hill_encryptor_uninit(cipher_hill_encryptor_t* self);
 //message_to_encrypt.
 void cipher_hill_encryptor_encrypt(cipher_hill_encryptor_t* self);
 
+void _get_new_message_to_encrypt
+(cipher_hill_encryptor_t* self,plaintext_t* plaintext);
+
 #endif

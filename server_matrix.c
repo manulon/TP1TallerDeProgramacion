@@ -38,8 +38,16 @@ void matrix_product
         for ( int i=0 ; i < self->dimension ; i++ ){
             plaintext_set(&final_plaintext,i+aux,0);
             for ( int j=0 ; j < self->dimension ; j++ ){
-                uint16_t result = final_plaintext.line[i+aux] +
+                int matrix = self->square_matrix[i][j];
+                int vector = plaintext_get(plaintext,j+aux);
+
+                uint16_t result = final_plaintext.line[i+aux] + 
+                                    ( vector * matrix );
+
+                /*uint16_t result = final_plaintext.line[i+aux] +
                 (self->square_matrix[i][j] * plaintext_get(plaintext,j+aux));
+                */
+               
                 final_plaintext.line[i+aux] = (unsigned char)(result % 26 );
             }
         }
