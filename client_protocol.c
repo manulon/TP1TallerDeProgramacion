@@ -44,14 +44,8 @@ ssize_t _client_protocol_receive_message
     communication_protocol_receive_message
         (comm,self->client->message_length,msg_aux);
     
-    self->client->message = calloc
-        (self->client->message_length+1,sizeof(char));
-    self->client->message[self->client->message_length] = 0;
+    _set_new_message(self,msg_aux);
     
-    for ( int i = 0 ; i < self->client->message_length ; i++ ){
-        self->client->message[i] = msg_aux[i];
-    }
-
     free(msg_aux);
     
     return bytes_received;    
@@ -59,4 +53,15 @@ ssize_t _client_protocol_receive_message
 
 void _reset_client_message(client_protocol_t* self){
     free(self->client->message);
+}
+
+void _set_new_message
+(client_protocol_t* self, unsigned char* msg_aux){
+    self->client->message = calloc
+        (self->client->message_length+1,sizeof(char));
+    self->client->message[self->client->message_length] = 0;
+    
+    for ( int i = 0 ; i < self->client->message_length ; i++ ){
+        self->client->message[i] = msg_aux[i];
+    }
 }

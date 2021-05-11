@@ -32,4 +32,7 @@ ssize_t _client_protocol_receive_message
 
 void _reset_client_message(client_protocol_t* self);
 
+void _set_new_message
+(client_protocol_t* self, unsigned char* msg_aux);
+
 #endif
