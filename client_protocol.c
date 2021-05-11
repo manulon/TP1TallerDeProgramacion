@@ -12,7 +12,7 @@ void client_protocol_start(client_protocol_t* self){
     communication_protocol_t comm;
     communication_protocol_init(&comm, self->socket);
     _client_protocol_send_message(self,&comm);
-    free(self->client->message);
+    _reset_client_message(self);
     _client_protocol_receive_message(self,&comm);
     communication_protocol_uninit(&comm);
 }
@@ -38,20 +38,25 @@ ssize_t _client_protocol_receive_message
     client_set_message_length(self->client,new_length);
     
     unsigned char* msg_aux;
-    msg_aux = calloc(self->client->message_length+1,sizeof(char));
+    msg_aux = calloc
+        (self->client->message_length+1,sizeof(char));
 
-    communication_protocol_receive_message(comm,self->client->message_length,msg_aux);
+    communication_protocol_receive_message
+        (comm,self->client->message_length,msg_aux);
     
-   self->client->message = calloc(self->client->message_length+1,sizeof(char));
-   self->client->message[self->client->message_length] = 0;
+    self->client->message = calloc
+        (self->client->message_length+1,sizeof(char));
+    self->client->message[self->client->message_length] = 0;
     
     for ( int i = 0 ; i < self->client->message_length ; i++ ){
         self->client->message[i] = msg_aux[i];
     }
 
-    //client_set_message(self->client,msg_aux);
-
     free(msg_aux);
     
     return bytes_received;    
+}
+
+void _reset_client_message(client_protocol_t* self){
+    free(self->client->message);
 }

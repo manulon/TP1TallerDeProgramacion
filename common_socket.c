@@ -111,18 +111,3 @@ void socket_connect
         return;
     }
 }
-
-//https://stackoverflow.com/questions/2952895/copying-a-short-int-to-a-char-array
-void _socket_short_to_char(short int size,unsigned  char* buffer){
-    buffer[0] = (size >> 8) & 0xff;
-    buffer[1] = size & 0xff;
-}
-
-//https://stackoverflow.com/questions/25787349/convert-char-to-short/25787777
-short int _socket_char_to_short(unsigned char* buffer){  
-    short int pshort;
-
-    pshort = (buffer[0] << 8) | buffer[1];
-    
-    return pshort;
-}

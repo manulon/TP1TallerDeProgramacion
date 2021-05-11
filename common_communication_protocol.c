@@ -22,7 +22,7 @@ ssize_t _send_size
     int total_bytes_sent = 0;
     unsigned char buffer[2];
 
-    _socket_short_to_char(size,buffer);
+    _short_to_char(size,buffer);
 
     if (size == 0){
         return total_bytes_sent;
@@ -88,7 +88,7 @@ int communication_protocol_receive_size
         remaining_bytes -= bytes;
     }
 
-    int size = _socket_char_to_short(buffer);
+    int size = _char_to_short(buffer);
 
     return size;
 
@@ -113,4 +113,19 @@ ssize_t communication_protocol_receive_message
         remaining_bytes -= bytes;
     }
     return total_bytes_received;
+}
+
+//https://stackoverflow.com/questions/2952895/copying-a-short-int-to-a-char-array
+void _short_to_char(short int size,unsigned  char* buffer){
+    buffer[0] = (size >> 8) & 0xff;
+    buffer[1] = size & 0xff;
+}
+
+//https://stackoverflow.com/questions/25787349/convert-char-to-short/25787777
+short int _char_to_short(unsigned char* buffer){  
+    short int pshort;
+
+    pshort = (buffer[0] << 8) | buffer[1];
+    
+    return pshort;
 }

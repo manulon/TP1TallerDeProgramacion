@@ -32,4 +32,9 @@ void _server_protocol_send_message_to_client
 ssize_t _server_protocol_receive_message_from_client
 (server_protocol_t* self, communication_protocol_t* comm);
 
+void _get_new_message
+(server_protocol_t* self, cipher_hill_encryptor_t* e);
+
+void _server_reset_message(server_protocol_t* self);
+
 #endif

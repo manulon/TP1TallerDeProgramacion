@@ -54,13 +54,4 @@ void socket_connect
 ssize_t socket_receive
 (socket_t *self, unsigned char *buffer, size_t length);
 
-//Recibe un size y lo representa en un buffer de dos bytes
-//La fuente de dicha funcion esta especificada en el .c
-void _socket_short_to_char(short int size, unsigned char* buffer);
-
-//Recibe un buffer de dos bytes y lo representa en forma de
-//short int.
-//La fuente de dicha funcion esta especificada en el .c
-short int _socket_char_to_short(unsigned char* buffer);
-
 #endif

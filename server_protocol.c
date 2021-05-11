@@ -21,16 +21,7 @@ void server_protocol_start
         cipher_hill_encryptor_init(e,self->server);
         cipher_hill_encryptor_encrypt(e);
 
-        // DELEGAR ESTO A UNA FUNCION
-        free(self->server->message_read);
-        self->server->message_read_length = e->message_to_encrypt_length;
-             
-        self->server->message_read = (unsigned char*)
-            calloc(self->server->message_read_length+1,sizeof(char));
-
-        for ( int i = 0 ; i < self->server->message_read_length ; i++ ){
-            self->server->message_read[i] = (e->message_to_encrypt[i]);
-        }
+        _get_new_message(self,e);
 
         cipher_hill_encryptor_uninit(e);
             
@@ -53,7 +44,7 @@ void _server_protocol_send_message_to_client
 (server_protocol_t* self, communication_protocol_t* comm){  
     communication_protocol_send_message
         (comm, self->server->message_read, self->server->message_read_length);
-    free(self->server->message_read);
+    _server_reset_message(self);
 }
 
 ssize_t _server_protocol_receive_message_from_client
@@ -81,4 +72,21 @@ ssize_t _server_protocol_receive_message_from_client
     free(msg_aux);
 
     return bytes_received;
+}
+
+void _get_new_message
+(server_protocol_t* self, cipher_hill_encryptor_t* e){
+    free(self->server->message_read);
+    self->server->message_read_length = e->message_to_encrypt_length;
+             
+    self->server->message_read = (unsigned char*)
+    calloc(self->server->message_read_length+1,sizeof(char));
+
+    for ( int i = 0 ; i < self->server->message_read_length ; i++ ){
+        self->server->message_read[i] = (e->message_to_encrypt[i]);
+    }
+}
+
+void _server_reset_message(server_protocol_t* self){
+    free(self->server->message_read);
 }

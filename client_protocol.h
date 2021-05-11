@@ -30,4 +30,6 @@ void _client_protocol_send_message
 ssize_t _client_protocol_receive_message
 (client_protocol_t* self, communication_protocol_t* comm);
 
+void _reset_client_message(client_protocol_t* self);
+
 #endif
