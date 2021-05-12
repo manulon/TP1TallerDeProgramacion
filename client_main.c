@@ -10,13 +10,12 @@ int main(int argc, char* argv[]){
     if (argc != 4) return -1;
 
     client_init(&client,argv);
-
     client_init_connection(&client,&socket);
 
     client_communicate_with_server(&client,&socket);
 
+    client_uninit_connection(&client,&socket);
     client_uninit(&client);
-    socket_uninit(&socket); // iria en uninit connection !!!
-   
+
     return 0;
 }

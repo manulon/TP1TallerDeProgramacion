@@ -40,14 +40,9 @@ void matrix_product
             for ( int j=0 ; j < self->dimension ; j++ ){
                 int matrix = self->square_matrix[i][j];
                 int vector = plaintext_get(plaintext,j+aux);
-                //int vector = plaintext->line[j+aux];
 
                 uint16_t result = final_plaintext.line[i+aux] + 
                                     (vector * matrix);
-
-                /*uint16_t result = final_plaintext.line[i+aux] +
-                (self->square_matrix[i][j] * plaintext_get(plaintext,j+aux));
-                */
                
                 final_plaintext.line[i+aux] = (unsigned char)(result % 26 );
             }

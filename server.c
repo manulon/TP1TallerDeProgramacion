@@ -25,8 +25,7 @@ void client_communicate_with_client(server_t* self){
     if ( _server_init_connection(self,&socket,&peer) )
         server_protocol_start(&protocol,&socket,&encryptor);
     
-    socket_uninit(&socket);
-    socket_uninit(&peer);
+    server_protocol_uninit(&protocol,&socket,&peer);
 }
 
 bool _server_init_connection

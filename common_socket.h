@@ -25,32 +25,20 @@ typedef struct {
     int fd;
 } socket_t;
 
-//Inicializa un socket con su file descriptor asociado.
 void socket_init(socket_t *self, int family, int socktype, int protocol);
 
-//Cierra el socket.
-//Pre: se ha inicializado un socket.
-//Post: se lo cierra cierra y se hace un shutdown de este.
 void socket_uninit(socket_t *self);
 
-//Devuelve true si pudo conectarse a un puerto y 
-//activarse para recibir conexiones,
-//false en caso de error.
 bool socket_bind_and_listen(socket_t *self,
                             const char *hostname,
                             const char *servicename);
 
-
-//Acepta una conexion y devuelve el fd en caso exitoso, -1 en caso de error.
 int socket_accept
 (socket_t *listener, socket_t *peer);
 
-//Conecta al socket.
 void socket_connect
 (socket_t *self, const char* hostname, const char* servicename);
 
-//Recibe una cantidad length de bytes.
-//Post: Devuelve la cantidad de bytes recibidos.
 ssize_t socket_receive
 (socket_t *self, unsigned char *buffer, size_t length);
 

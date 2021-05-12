@@ -34,11 +34,11 @@ void server_protocol_start
     }
 }
 
-//la tengo que usar!!!!
-/*void server_protocol_uninit
-(server_protocol_t* self){
-    //cierro socket?=¡¡?
-}*/
+void server_protocol_uninit
+(server_protocol_t* self, socket_t* socket, socket_t* peer){
+    socket_uninit(socket);
+    socket_uninit(peer);
+}
 
 void _server_protocol_send_message_to_client
 (server_protocol_t* self, communication_protocol_t* comm){  

@@ -11,13 +11,8 @@ typedef struct {
     FILE* fp;
 } file_reader_t;
 
-
 int file_reader_init(file_reader_t* self, const char* file_name);
-
-
 bool file_reader_read_chunk(file_reader_t* self, client_t* client);
-
-
 int file_reader_uninit(file_reader_t* self);
 
 #endif

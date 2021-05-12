@@ -13,6 +13,10 @@ void client_init_connection(client_t* self,socket_t* socket){
     socket_connect(socket,self->hostname,self->servicename);
 }
 
+void client_uninit_connection(client_t* self,socket_t* socket){
+    socket_uninit(socket);
+}
+
 void client_uninit(client_t* self){}
 
 void client_communicate_with_server(client_t* self,socket_t* socket){
@@ -39,8 +43,9 @@ void _client_decrypt_message(client_t *self){
 }
 
 void _client_print_message(client_t* self){
-    /*sirve con el barra ene?????*/
+    //Agrego el \n al final del mensaje
     self->message[self->message_length] = 10;
+    
     fwrite(self->message, sizeof(unsigned char),
     (self->message_length+1), stdout);
      

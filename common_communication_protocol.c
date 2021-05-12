@@ -24,10 +24,6 @@ ssize_t _send_size
 
     _short_to_char(size,buffer);
 
-    /*if (size == 0){
-        return total_bytes_sent;
-    }*/ 
-
     while (total_bytes_sent < 2) {
         ssize_t bytes = send(self->socket->fd, 
                             &buffer[total_bytes_sent],
@@ -48,11 +44,6 @@ ssize_t _send_message
 (communication_protocol_t* self, unsigned char* msg, int size){
     int remaining_bytes = size;
     int total_bytes_sent = 0;
-
-    /*if (size == 0){
-        printf("Entre aca....no?\n");
-        return total_bytes_sent;
-    }*/
 
     while (total_bytes_sent < size) {
         ssize_t bytes = send(self->socket->fd, 

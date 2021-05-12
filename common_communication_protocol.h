@@ -28,7 +28,10 @@ int communication_protocol_receive_size
 ssize_t communication_protocol_receive_message
 (communication_protocol_t* self, int length, unsigned char* buffer);
 
-void _short_to_char(short int size,unsigned  char* buffer);
-short int _char_to_short(unsigned char* buffer);
+void _short_to_char
+(short int size,unsigned  char* buffer);
+
+short int _char_to_short
+(unsigned char* buffer);
 
 #endif
