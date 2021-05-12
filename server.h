@@ -18,15 +18,16 @@ typedef struct {
 //mensajes.
 void server_init(server_t* self, char* const* argv, password_t* key);
 
+//Se inicia la conexion con el cliente
 bool _server_init_connection
 (server_t* self, socket_t* socket,socket_t* peer);
 
-//Se cierra al servidor y asi a los archivos necesarios.
+//Se cierra al servidor. Esta clase existe de manera simbolica 
+//para respetar RAII.
 void server_uninit(server_t* self);
 
-//Recibe un mensaje cifrado del cliente y lo encripta
-//para luego enviarselo de nuevo al cliente.
-//La encriptacion es delegada
-void client_communicate_with_client(server_t* self);
+//Se crea el protocolo por parte del servidor. 
+//Si hay una conexion se le da inicio a este.
+void server_communicate_with_client(server_t* self);
 
 #endif

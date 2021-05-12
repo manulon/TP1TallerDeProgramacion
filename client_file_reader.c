@@ -14,7 +14,7 @@ int file_reader_init
 }
 
 bool file_reader_read_chunk
-(file_reader_t* self, client_t* client){
+(file_reader_t* self, client_t* client){    
     char* chunk = NULL;
     size_t buffer_size = 0;
     size_t buffer_read = 0;

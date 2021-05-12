@@ -14,7 +14,7 @@ void server_init(server_t* self, char* const* argv, password_t* key) {
 
 void server_uninit(server_t* self){}
 
-void client_communicate_with_client(server_t* self){
+void server_communicate_with_client(server_t* self){
     socket_t socket;
 	socket_t peer;
     cipher_hill_encryptor_t encryptor;
