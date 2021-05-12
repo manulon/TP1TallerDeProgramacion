@@ -22,7 +22,7 @@ void client_communicate_with_server(client_t* self,socket_t* socket){
     file_reader_init(&file_reader, self->filename);
     client_protocol_init(&protocol,socket,self);
 
-    while(file_reader_read_chunk(&file_reader,self)){
+    while (file_reader_read_chunk(&file_reader,self)){
         client_protocol_start(&protocol);
         _client_decrypt_message(self);
         _client_print_message(self);

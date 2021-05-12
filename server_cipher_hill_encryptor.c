@@ -11,7 +11,7 @@ void cipher_hill_encryptor_init
     
     self->message_to_encrypt_length = server->message_read_length;
     self->message_to_encrypt = 
-        calloc(self->message_to_encrypt_length+2, sizeof(char));
+        calloc(self->message_to_encrypt_length+1, sizeof(char));
 
     strncpy((char*)self->message_to_encrypt, 
     (char*)server->message_read,(server->message_read_length));
@@ -51,12 +51,11 @@ void _get_new_message_to_encrypt
     free(self->message_to_encrypt);
   
     self->message_to_encrypt = 
-        calloc(self->message_to_encrypt_length+2, sizeof(char));
+        calloc(self->message_to_encrypt_length+1, sizeof(char));
 
     for ( int i = 0 ; i < self->message_to_encrypt_length ; i++ ){
         self->message_to_encrypt[i] = plaintext->line[i];
     }
         
-    self->message_to_encrypt[self->message_to_encrypt_length+1] = '\0';
-    
+    self->message_to_encrypt[self->message_to_encrypt_length] = '\0'; 
 }

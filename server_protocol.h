@@ -21,9 +21,11 @@ void server_protocol_init
 void server_protocol_start
 (server_protocol_t* self,socket_t* socket,cipher_hill_encryptor_t* e);
 
+/*
 //Cierra los archivos pertinentes.
 void server_protocol_uninit
 (server_protocol_t* self);
+*/
 
 //Delega responsabilidad de enviar mensajes al servidor
 void _server_protocol_send_message_to_client
@@ -38,3 +40,4 @@ void _get_new_message
 void _server_reset_message(server_protocol_t* self);
 
 #endif
+

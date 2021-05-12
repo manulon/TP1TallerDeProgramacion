@@ -31,14 +31,14 @@ void server_protocol_start
             _server_protocol_receive_message_from_client(self,&comm);
 
     communication_protocol_uninit(&comm);
-    
     }
 }
 
-void server_protocol_uninit
+//la tengo que usar!!!!
+/*void server_protocol_uninit
 (server_protocol_t* self){
     //cierro socket?=¡¡?
-}
+}*/
 
 void _server_protocol_send_message_to_client
 (server_protocol_t* self, communication_protocol_t* comm){  
@@ -57,12 +57,13 @@ ssize_t _server_protocol_receive_message_from_client
     msg_aux = calloc(self->server->message_read_length+1,sizeof(char));
 
     bytes_received = 
-        communication_protocol_receive_message(comm,self->server->message_read_length,msg_aux);
+        communication_protocol_receive_message
+            (comm,self->server->message_read_length,msg_aux);
     
-    if ( bytes_received > 0){
+    if ( bytes_received > 0 ){
         self->server->message_read = calloc
-            (self->server->message_read_length+2,sizeof(char));
-        self->server->message_read[self->server->message_read_length+1] = 0;
+            (self->server->message_read_length+1,sizeof(char));
+        self->server->message_read[self->server->message_read_length] = 0;
         
         for ( int i = 0 ; i < self->server->message_read_length ; i++ ){
             self->server->message_read[i] = msg_aux[i];

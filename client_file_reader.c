@@ -43,4 +43,3 @@ int file_reader_uninit
     }
     return 0;
 }
-    

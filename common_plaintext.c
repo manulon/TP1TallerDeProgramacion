@@ -40,7 +40,7 @@ void plaintext_init
 (plaintext_t* self, int length){
     self->line_length = length;
     self->line = (unsigned char*)calloc(length+2,sizeof(char));
-    self->line[length+1] = 0;
+    self->line[length] = 0;
 }
 
 void plaintext_uninit
@@ -53,11 +53,27 @@ void plaintext_fill_with_zero
     if ( self->line_length != 0 ){   
         if ( (self->line_length % dimension)  !=0 ){
             int rest = (self->line_length % dimension);
-            int spaces_to_fill = (self->line_length + rest);
-            while ( self->line_length < spaces_to_fill ){
-                self->line[self->line_length] = 0; 
-                self->line_length++;
+            int new_size = (self->line_length + (dimension - rest));
+            
+            unsigned char* new_line = NULL;
+            new_line = (unsigned char*)
+                calloc(new_size+1,sizeof(char));
+
+            for ( int i=0 ; i < self->line_length ; i++ ){
+                new_line[i] = self->line[i];
             }
+
+            free(self->line);
+
+            self->line_length = new_size;
+            self->line = (unsigned char*)
+                calloc(self->line_length+1,sizeof(char));
+
+            for ( int i=0 ; i < self->line_length ; i++ ){
+                self->line[i] = new_line[i];
+            }
+
+            free(new_line);
         }else if ( (self->line_length)==1 ){
             int spaces_to_fill = dimension - 1;
             while ( self->line_length <= (spaces_to_fill) ){
