@@ -16,45 +16,36 @@ Se plantearon los siguientes:
 
 - PLAINTEXT: (o ciphertext) un TDA que representa al elemento que sera encriptado por el encriptador y servira para definir el mensaje final que sera enviado al cliente. Posee dos atributos *line* representa a la cadena de caracteres a encriptar y *line_length* que representa el largo de dicha cadena.
 
-- SOCKET: un TDA socket con los métodos necesarios para poder efectuar la comunicación entre cliente y servidor: abrir el socket, esperar a una conexión, aceptarla y finalmente cerrar el socket correctamente.
+- SOCKET: un TDA socket con los métodos necesarios para poder efectuar la comunicación entre cliente y servidor: abrir el socket, esperar a una conexión, aceptarla, enviar y recibir mensajes a través del mismo, y finalmente cerrar el socket correctamente.
+
 
 - CIPHER HILL ENCRYPTOR: este TDA seria el corazon de este programa, es el encargado de realizar y delegar todos los pasos de la encriptacion. Posee los atributos *password* que hace referencia a la contraseña leida, *message_to_encrypt* que es el mensaje que ira pasando por todos los pasos de encriptacion, tambien esta *message_to_encrypt_length* que como todos los TDA representa el largo de dicho mensaje. Y finalmente *final_plaintext* que sera el plaintext resultante de toda la encriptacion.
 
 - MATRIX: un TDA que representa a la matriz que se utilizara para hacer el paso final de la encriptacion, fue creada para delegar el producto matricial y posee 3 atributos, su dimension, el largo inicial de la contraseña y la matriz en si.
 
-- PASSWORD: un TDA que representa a la key que se ingresa cuando se crea al servidor.
+- PASSWORD: un TDA que representa a la key que se ingresa cuando se crea al servidor,.
 
-- CLIENTE: TDA que contiene los atributos necesarios para entablecer una comunicacion con el servidor, obtener el mensaje a enviar de un archivo y decodificar el mensaje recibido.
+- CLIENTE: TDA que contiene los atributos necesarios para entablecer una conexion con el servidor y leer un archivo. Tambien dos atributos que hacen referencia al mensaje que este quiere enviar al servidor, como *message* y *message_lenght*.
 
-- SERVIDOR: TDA que contiene los atributos necsarios para entablecer una comunicacion con el cliente.
+- SERVIDOR: TDA que use a los mencionados anteriormente para cumplir su función: abrir un socket, esperar a recibir un mensaje, encriptarlo y enviarlo nuevamente al cliente.
 
-- FILE READER: para delegar responsabilidad, se pensó este TDA con la función de leer un archivo y setear las lineas como mensaje al cliente que lo ha invocado.
+- FILE READER: para delegar responsabilidad, se pensó este TDA con la función de leer un archivo y enviar las lineas al cliente. Va a ser usado por el cliente cuando corresponda. *VER APARTADO IMPLEMENTACIONES PARA REENTREGA*
 
-- CLIENT PROTOCOL: TDA que se asegura de respetar el protocolo de envio y recepcion de mensajes por parte del cliente.
-
-- SERVER PROTOCOL: TDA que se asegura de respetar el protocolo de envio y recepcion de mensajes por parte del servidor. 
-
-- COMMUNICATION PROTOCOL: TDA creado para realizar el envio de mensajes para cliente y servidor.
 
 # IMPLEMENTACIÓN
 
 Para la implementacion se busco siempre cumplir con el paradigma de programacion orientada a objetos, algo que es un poco dificil en c ya que estos no tienen objetos en si. En todo momento se intento no romper con el encapsulamiento y delegar comportamientos. Asimismo tambien cumplir con los principios SOLID.
 
-# CAMBIOS REENTREGA
+# IMPLEMENTACIONES PARA REENTREGA
 
-- Se ha corregido el cierre de flujos estandar en `client.c.`
-- Se ha corregido el shadowing a la funcion `file_reader_read_chunk` y se ha cambiado la implementacion de esta para que sea mas facil para el autor.
-- Se ha corregido la mezcla de niveles de abstraccion en `file_reader_read_chunk` y `server_cipher_hill_encryptor`
-- Se ha corregido el `socket_init` para que el file descriptor se obtenga dentro de esta funcion y asi respetar el encapsulamiento
-- Se han corregido pequeñas partes logicas de `plaintext_fill_with_zero()` que no permitian el funcionamiento correcto del programa. Asimismo con partes de la funcion `_send_message`.
-- Se han agregado variables intermedias en `matrix_product` para aportarle legibilidad al codigo.
-- Se han implementado los TDA `client_protocol`, `server_protocol` y `common_protocol` que aseguran el cumplimiento correcto del protocolo propuesto por la catedra para el envio de los mensajes.
+En este apartado voy a mostrar un agregado que me gustaria agregarle al programa para que quede un poco mas orientado a objetos posible. En la clase *file_reader* mas precisamente en el metodo *file_reader_iterator* este metodo viola los principios de programacion orientada a objetos ya que la clase no esta teniendo una unica responsabilidad. El file reader solamente debe encargarse de leer el archivo y enviar las lineas que lee al cliente, en cambio en la implementacion presentada es el file reader quien lee y envia al servidor los mensajes, lo cual esta mal.
+Lo ideal seria que haya un metodo llamado *file_reader_get_chunk* que lo que haga es obtener un *chunk* del archivo y que este sea enviado al cliente para que lo procese como mensaje y lo envie al servidor. Esta implementacion para esta entrega no pudo ser implementada ya que hubo un problema que surgio en la etapa de elaboracion del programa que explicare en el apartado siguiente.
 
 # Problemas
 
-Para esta entrega no se han reportado problemas al realizar el trabajo.
+Como se puede ver, mi codigo no pasa las ultimas dos pruebas del sercom *msg_long* y *msgnl*. La segunda prueba tiene como archivo de entrada un "\n" solamente y como resultado deberia mostrase lo mismo en el stdout. Pero con la implementacion que arme yo esto pasaba a veces solamente, cuando probaba en mi entorno local, a veces la prueba corria perfectametne y otras se quedaba colgada en el medio entre la respuesta del servidor y la recepcion final del cliente. Estuve dos dias intentando ver por que pasaba eso pero no logre conseguirlo. Mi sospecha es que debe haber algun buffer overflow en algun lado o debo tener mal implemetado los receive y send. Pero no llegue a encontrar esos errores.
+Para la prueba de *msg_long* tuve una situacion similar. Muchas veces en mi entorno me ha pasado que la primer linea se imprime perfectamente y luego se cuelga, o las primeras dos bien y luego nada. O hasta tambien la primer linea impresa con la mitad de caracteres bien y la otra mitad mal de manera aleatoria. Esta situacion fue la que mas indicios me dio de un buffer overflow, que como repito, no pude encontrarlo. Uno de los posibles detonantes de el error tambien puede ser que esta prueba tiene lineas en su input que solamente son un "\n" que vendria a ser la prueba *msgnl*, al tenerla integrada y yo tener mal esa prueba tambien eso no ayuda al funcionamiento correcto del programa. 
 
 # Diagrama de clases representativo de la solución final:
 
-Este diagrama representa la relacion entre las clases. ![DiagramaDeClases](https://user-images.githubusercontent.com/45469722/118380149-0b1c2000-b5b6-11eb-9dd1-e9924644a289.png)
-
+*ACLARACION* Solo subo un paneo general de las relaciones ya que el programa no esta finalizado en su totalidad![Diagrama sin título](https://user-images.githubusercontent.com/45469722/117068306-7ede4300-ad01-11eb-989e-baf025632c39.png)

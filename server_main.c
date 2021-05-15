@@ -1,5 +1,5 @@
 #include "server.h"
-#include "common_plaintext.h"
+#include "server_plaintext.h"
 #include "server_password.h"
 
 int main(int argc, char* const* argv) {

@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "common_plaintext.h"
+#include "server_plaintext.h"
 #include "server_password.h"
 
 typedef struct {

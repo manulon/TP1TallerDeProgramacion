@@ -1,5 +1,5 @@
-#ifndef COMMON_PLAINTEXT_H
-#define COMMON_PLAINTEXT_H
+#ifndef SERVER_PLAINTEXT_H
+#define SERVER_PLAINTEXT_H
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -2,7 +2,7 @@
 #define SERVER_H
 
 #include "server_password.h"
-#include "common_plaintext.h"
+#include "server_plaintext.h"
 #include "common_socket.h"
 
 typedef struct {
