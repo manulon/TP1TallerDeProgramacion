@@ -56,4 +56,5 @@ Para esta entrega no se han reportado problemas al realizar el trabajo.
 
 # Diagrama de clases representativo de la solución final:
 
-*ACLARACION* Solo subo un paneo general de las relaciones ya que el programa no esta finalizado en su totalidad![Diagrama sin título](https://user-images.githubusercontent.com/45469722/117068306-7ede4300-ad01-11eb-989e-baf025632c39.png)
+Este diagrama representa la relacion entre las clases. ![DiagramaDeClases](https://user-images.githubusercontent.com/45469722/118380149-0b1c2000-b5b6-11eb-9dd1-e9924644a289.png)
+
